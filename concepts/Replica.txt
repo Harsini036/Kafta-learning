@@ -1,0 +1,55 @@
+If you want backup brokers for partition 0 and partition 1, you must set a replication factor of 2 (or higher) for your topic. Here’s how the architecture would change, using 2 brokers and 2 partitions as the example:
+
+Example: Topic with 2 Partitions, Replication Factor 2, 2 Brokers
+Brokers: Broker A and Broker B
+Partition Layout
+Partition	Leader Broker	Follower Broker (Replica)
+Partition 0	A	B
+Partition 1	B	A
+Partition 0:
+
+Leader: Broker A
+
+Replica (Backup): Broker B
+
+Partition 1:
+
+Leader: Broker B
+
+Replica (Backup): Broker A
+
+How It Works
+The leader manages all reads and writes for a partition.
+
+The follower keeps an exact copy of the partition by replicating data from the leader.
+
+If the leader fails, the follower automatically becomes the new leader—your data remains available.
+
+This setup ensures automatic failover and high availability for both partitions.
+
+Visual Table
+Partition	Leader	Follower (Replica)	Data Available If Leader Fails?
+0	A	B	Yes
+1	B	A	Yes
+What Changes?
+With replication factor 2, each partition exists on two brokers: one as leader, one as follower.
+
+If any broker goes down, every partition remains fully available on the remaining broker.
+
+This is called "high availability": Kafka can tolerate one broker failure without data loss.
+
+Summary:
+With replication factor 2, your topic’s partitions have backup copies on other brokers. If a leader broker fails, its follower instantly takes over, keeping your data and service available.If you set the replication factor to 2 (or higher), each partition will have a backup copy stored on a second broker. Here’s how the architecture changes:
+
+Partition 0 will have a leader on Broker A and a follower (replica) on Broker B.
+
+Partition 1 will have a leader on Broker B and a follower on Broker A.
+
+Now, when Broker A fails, Partition 0’s backup copy on Broker B becomes the new leader, and service continues with no data loss or downtime. Similarly, if Broker B fails, Partition 1’s backup on Broker A takes over.
+
+Table illustration:
+
+Partition	Leader Broker	Follower Broker	Available if any broker fails?
+Partition 0	A	B	Yes
+Partition 1	B	A	Yes
+This setup is called high availability—each partition’s data exists on two brokers, so Kafka can automatically recover from a single broker failure with no interruption.

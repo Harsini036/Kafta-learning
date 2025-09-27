@@ -1,0 +1,12 @@
+Yes, if you want to create a new Kafka topic, you use the same cluster UUID—meaning, the topic will exist inside your currently running cluster. The cluster UUID identifies the cluster itself, and any number of topics can be added to the same cluster as long as that cluster is running and available.
+
+How it works:
+
+Once Kafka is initialized with a cluster UUID (in Kraft mode), that UUID is used for all topics, partitions, and data managed by that cluster.
+
+You do not need to generate or set a new UUID when creating a new topic; you simply use Kafka CLI or API commands to create as many topics as required, and they all become part of that cluster.
+
+Each topic created in the cluster will have its own unique topic ID, but all of them share the same cluster UUID.
+
+Summary:
+You create new topics in the same cluster—all sharing the same cluster UUID—using standard Kafka topic creation commands. The cluster UUID uniquely identifies the cluster, and all topics and partitions are resources inside it.

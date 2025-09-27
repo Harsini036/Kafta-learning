@@ -1,0 +1,36 @@
+.\bin\windows\kafka-storage.bat random-uuid
+
+<----->
+Purpose: Generates a random UUID (Universally Unique Identifier).
+Why: Needed to initialize Kraft mode (Kafka without ZooKeeper). This UUID is what identifies your Kafka cluster uniquely.
+
+
+
+.\bin\windows\kafka-storage.bat format -t Wv2w8V58Svq7teVggRn41A -c .\config\kraft\server.properties
+
+<---->
+Purpose: Formats the Kafka logs for Kraft mode using your generated UUID.
+Why: This step prepares your Kafka cluster’s internal storage directories so they’re ready for use. The clustering and leader election system (“KRaft”) requires this formatting before the server can start.
+
+.\bin\windows\kafka-server-start.bat .\config\kraft\server.properties
+
+<--->
+Purpose: Starts the Kafka server using Kraft mode (controller + broker), referencing your configuration file.
+Why: This turns on the Kafka cluster so it’s ready to accept producer/consumer connections and manage topics.
+
+.\bin\windows\kafka-topics.bat --create --topic test --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+<--->
+Purpose: Creates a new Kafka topic named ‘test’ with 1 partition and a replication factor of 1.
+Why: Topics are like folders where messages/events are stored. You need at least one topic to send messages.
+
+.\bin\windows\kafka-console-producer.bat --topic test --bootstrap-server localhost:9092
+
+<--->
+Purpose: Starts an interactive Kafka producer. You can type messages into the console; each is sent to the ‘test’ topic.
+Why: This is how you put data into Kafka. Every line you type becomes a message handed off to Kafka.
+
+.\bin\windows\kafka-console-consumer.bat --topic test --from-beginning --bootstrap-server localhost:9092
+<--->
+Purpose: Starts a consumer that reads all messages from the ‘test’ topic, starting from the beginning of the topic.
+Why: This lets you verify that messages sent by the producer are received and displayed.
