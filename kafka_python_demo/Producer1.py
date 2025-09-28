@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 boostrap_server = os.getenv('KAFKA_BOOTSTRAP')
-topic_name = os.getenv('KAFKA_TOPIC')
+topic_name = 'test3'
 
 producer = KafkaProducer(
      bootstrap_servers=[boostrap_server],
@@ -16,7 +16,7 @@ producer = KafkaProducer(
 
 print("Type your messages. Press Ctrl+C to exit.")
 try:
-    with open('test.csv', newline='', encoding='utf-8-sig') as csvfile:
+    with open('mock_kafka_test.csv', newline='', encoding='utf-8-sig') as csvfile:
         reader = csv.DictReader(csvfile)
         reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
         for row in reader:
@@ -28,10 +28,11 @@ try:
                 "status": row["status"],
                 "timestamp": row["timestamp"]
             }
-            print(f"Sent: {key}, {value}")
-            producer.send(topic_name, key=key, value=value)
+            future = producer.send(topic_name, key=key, value=value)
+            record_metadata = future.get(timeout=10)
+            print(f"Sent: {key}, {value} --> Partition: {record_metadata.partition}, Offset: {record_metadata.offset}")
 
-    producer.flush()
+    #producer.flush()
 except Exception as e:
     print(f"Error occurred: {e}")
 finally:

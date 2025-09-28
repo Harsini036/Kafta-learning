@@ -1,0 +1,9 @@
+To alter the existing topic description:
+.\bin\windows\kafka-topics.bat --alter --topic your_topic --partitions 3 --bootstrap-server localhost:9092
+
+Formula for hashing:
+partition_id = hash(key) % total_partitions
+
+<---  To view the updated topic configuration -->
+.\bin\windows\kafka-topics.bat --describe --topic test --bootstrap-server localhost:9092
+

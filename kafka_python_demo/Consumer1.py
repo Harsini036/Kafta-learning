@@ -37,7 +37,7 @@ for message in consumer:
         continue
 
     ts = parse_timestamp(record["timestamp"])
-
+    print(latest_record)
     if latest_record is None or ts > parse_timestamp(latest_record["timestamp"]):
         latest_record = record
 
